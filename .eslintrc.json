@@ -21,6 +21,7 @@
     "react/prop-types": "off",
     "no-unsafe-finally": "off",
     "no-unused-vars": "warn",
-    "react-refresh/only-export-components": "off"
+    "react-refresh/only-export-components": "off",
+    "@next/next/no-img-element": "off"
   }
 }
