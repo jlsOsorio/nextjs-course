@@ -6,6 +6,10 @@
 
 body {
   font-family: 'Open Sans', 'Lato', sans-serif;
+}
+
+body,
+ul {
   margin: 0;
   padding: 0;
 }
@@ -21,4 +25,9 @@ h6 {
 
 li {
   list-style: none;
+}
+
+.center {
+  margin: auto;
+  text-align: center;
 }
