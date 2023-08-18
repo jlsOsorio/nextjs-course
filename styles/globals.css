@@ -8,11 +8,11 @@ body {
   font-family: 'Open Sans', 'Lato', sans-serif;
 }
 
-body,
+/* body,
 ul {
   margin: 0;
   padding: 0;
-}
+} */
 
 h1,
 h2,
@@ -23,9 +23,9 @@ h6 {
   font-family: 'Lato', sans-serif;
 }
 
-li {
+/* li {
   list-style: none;
-}
+} */
 
 .center {
   margin: auto;
