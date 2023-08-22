@@ -22,6 +22,20 @@ export async function getStaticProps() {
   const jsonData = await fs.readFile(filePath);
   const data: { products: IProduct[] } = JSON.parse(jsonData.toString());
 
+  if (!data) {
+    return {
+      redirect: {
+        destination: '/no-data', // Exemplo de redirect page quando não for possível conectar ao servidor
+      },
+    };
+  }
+
+  if (data.products.length === 0) {
+    return {
+      notFound: true, // Exemplo a mostrar página 404 quando não existe produtos para serem mostrados
+    };
+  }
+
   return {
     props: {
       products: data.products,
