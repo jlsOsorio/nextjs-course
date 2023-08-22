@@ -26,6 +26,7 @@ export async function getStaticProps() {
     props: {
       products: data.products,
     },
+    revalidate: 10, // O número (em segundos) diz de quanto em quanto tempo se pretende que a página seja gerada novamente. Isto no ambiente de desenvolvimento não importa porque, sempre que actualizamos a página, a framework irá sempre correr este método. No entanto, em produção, o cenário é bem diferente: como a página estática com conteúdo dinâmico (de acordo com o getStaticProps) é gerada no processo de build do projecto, se não houver a propriedade "revalidate", o conteúdo estático será sempre o mesmo. Assim, o "revalidate" obriga a fazer (em produção) uma nova geração da própria página, com base no conteúdo mais actualizado no lado do servidor.
   };
 }
 
