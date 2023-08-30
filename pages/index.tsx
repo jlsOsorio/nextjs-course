@@ -3,6 +3,7 @@ import React from 'react';
 import path from 'path';
 import fs from 'fs/promises';
 import { IProduct } from '@/interfaces/i-products';
+import Link from 'next/link';
 
 const HomePage = (props: { products: IProduct[] }) => {
   const { products } = props;
@@ -10,7 +11,9 @@ const HomePage = (props: { products: IProduct[] }) => {
   return (
     <ul>
       {products.map((product) => (
-        <li key={product.id}>{product.title}</li>
+        <li key={product.id}>
+          <Link href={`/${product.id}`}>{product.title}</Link>
+        </li>
       ))}
     </ul>
   );
