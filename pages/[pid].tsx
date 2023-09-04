@@ -19,14 +19,20 @@ const ProductDetailPage = (props: { loadedProduct?: IProduct }) => {
   );
 };
 
+async function getData() {
+  const filePath = path.join(process.cwd(), 'data', 'dummy-backend.json');
+  const jsonData = await fs.readFile(filePath);
+  const data: { products: IProduct[] } = JSON.parse(jsonData.toString());
+
+  return data;
+}
+
 export async function getStaticProps(context: GetStaticPropsContext) {
   const { params } = context;
 
   const productId = params?.pid;
 
-  const filePath = path.join(process.cwd(), 'data', 'dummy-backend.json');
-  const jsonData = await fs.readFile(filePath);
-  const data: { products: IProduct[] } = JSON.parse(jsonData.toString());
+  const data = await getData();
 
   const product = data.products.find((product) => product.id === productId);
 
@@ -38,13 +44,14 @@ export async function getStaticProps(context: GetStaticPropsContext) {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
+  const data = await getData();
+
+  const ids = data.products.map((product) => product.id);
+  const pathsWithParams = ids.map((id) => ({ params: { pid: id } }));
+
   return {
-    paths: [
-      {
-        params: { pid: 'p1' },
-      },
-    ],
-    fallback: true,
+    paths: pathsWithParams,
+    fallback: false,
   };
 };
 
