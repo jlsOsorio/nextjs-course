@@ -9,7 +9,7 @@ const ProductDetailPage = (props: { loadedProduct?: IProduct }) => {
 
   if (!loadedProduct) {
     return <p>Loading...</p>;
-  } // Quando se coloca o "fallback" a true, dizemos que, mesmo que os endpoints não estejam definidos no getStaticPaths, eles devem poder ser acedidos na mesma. A diferença é que o conteúdo destas páginas "não definidas" não é pre-fetched. Por isso deve ter-se em conta o fallback e prevenir essa situação (ou, caso se faça um novo pedido, i.e., por exemplo, não se carregue directamente no link, mas se escreva o endpoint no url, surgirá um erro porque o "loadedProduct" não foi instantaneamente preparado aquando da renderização desta página), Neste caso dizemos que, enquanto não existe conteúdo no "loadedProduct", aparece um parágrafo com o texto "Loading..." Caso se use o fallback: 'blocking', esta prevenção não será necessária, já que o NextJS espera que a página esteja totalmente pré-gerada do lado do servidor antes de a servir.
+  } // Com fallback a true e sem qualquer outro cenário onde haja outro pid que não esteja no dummy-backend, a aplicação mostrará um erro na falha do fetch da static prop. Assim, deve ser necessário tratar o erro, dizendo no "getStaticProps" para se comportar de determinada maneira (no caso, mostrar página 404), caso não encontre definitivamente o pid pretendido.
 
   return (
     <>
@@ -36,6 +36,10 @@ export async function getStaticProps(context: GetStaticPropsContext) {
 
   const product = data.products.find((product) => product.id === productId);
 
+  if (!product) {
+    return { notFound: true };
+  } // Comportamento pretendido, caso não encontre pid desejado.
+
   return {
     props: {
       loadedProduct: product,
@@ -51,7 +55,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
   return {
     paths: pathsWithParams,
-    fallback: false,
+    fallback: true, // Um pid que não esteja no ficheiro dummy_backend pode ainda ser um pid com informação válida, pelo que se definiu o fallback de modo a que, mesmo não havendo pid no dummy-backend, o NextJS tente renderizar na mesma.
   };
 };
 
