@@ -1,49 +1,74 @@
-import React, { useState } from 'react';
+import React from 'react';
+import useSWR from 'swr';
 
 const LastSalesPage = () => {
   const [sales, setSales] = React.useState<ISales[]>();
-  const [isLoading, setIsLoading] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
+
+  async function fetcherHandler(url: string) {
+    const response = await fetch(url);
+    return await response.json();
+  }
+
+  const { data, error } = useSWR(
+    'https://nextjs-course-69065-default-rtdb.europe-west1.firebasedatabase.app/sales.json',
+    fetcherHandler
+  );
 
   React.useEffect(() => {
-    setIsLoading(true);
-    fetch(
-      'https://nextjs-course-69065-default-rtdb.europe-west1.firebasedatabase.app/sales.json'
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        const transformedSales: ISales[] = [];
+    if (data) {
+      const transformedSales: ISales[] = [];
 
-        for (const key in data) {
-          transformedSales.push({
-            id: key,
-            username: data[key].username,
-            volume: data[key].volume,
-          });
-        }
+      for (const key in data) {
+        transformedSales.push({
+          id: key,
+          username: data[key].username,
+          volume: data[key].volume,
+        });
+      }
 
-        setSales(transformedSales);
-        setIsLoading(false);
-      });
-  }, []);
+      setSales(transformedSales);
+    }
+  }, [data]);
 
-  if (isLoading) {
+  // React.useEffect(() => {
+  //   setIsLoading(true);
+  //   fetch(
+  //     'https://nextjs-course-69065-default-rtdb.europe-west1.firebasedatabase.app/sales.json'
+  //   )
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       const transformedSales: ISales[] = [];
+
+  //       for (const key in data) {
+  //         transformedSales.push({
+  //           id: key,
+  //           username: data[key].username,
+  //           volume: data[key].volume,
+  //         });
+  //       }
+
+  //       setSales(transformedSales);
+  //       setIsLoading(false);
+  //     });
+  // }, []);
+
+  if (error) {
+    <p>Failed to load</p>;
+  }
+
+  if (!data || !sales) {
     return <p>Loading...</p>;
   }
 
-  if (!sales) {
-    <p>No data yet...</p>; // Apesar de ter o useEffect para fazer o fetch no client-side, o NextJS faz, ainda assim, a pré-renderização. Ao fazê-lo, vai ignorar todo o código inserido no useEffect (inicialmente), renderizando toda a base da página, sendo necessário verificar a existência de dados e, como parte integrante e fundamental ao estudo da framework, será este código que irá ser mostrado no código fonte da página, já que esta condição que será verificada no momento da pré-renderização (isLoading = false; sales = undefined)
-  }
-
   return (
-    sales && (
-      <ul>
-        {sales?.map((sale) => (
-          <li key={sale.id}>
-            {sale.username} - {sale.volume}€
-          </li>
-        ))}
-      </ul>
-    )
+    <ul>
+      {sales?.map((sale) => (
+        <li key={sale.id}>
+          {sale.username} - {sale.volume}€
+        </li>
+      ))}
+    </ul>
   );
 };
 
