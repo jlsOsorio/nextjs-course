@@ -57,13 +57,13 @@ const LastSalesPage = ({ sales }: { sales: ISales[] }) => {
     <p>Failed to load</p>;
   }
 
-  if (!data && !sales) {
+  if (!data && !salesState) {
     return <p>Loading...</p>;
   }
 
   return (
     <ul>
-      {sales?.map((sale) => (
+      {salesState?.map((sale) => (
         <li key={sale.id}>
           {sale.username} - {sale.volume}€
         </li>
