@@ -1,39 +1,61 @@
 import React from 'react';
-import { useRouter } from 'next/router';
-import { getEventById } from '@/dummy-data';
 import EventSummary from '../../components/event-detail/event-summary';
 import EventLogistics from '../../components/event-detail/event-logistics';
 import EventContent from '../../components/event-detail/event-content';
 import ErrorAlert from '@/components/ui/error-alert';
+import { GetStaticPropsContext } from 'next';
+import IEvent from '@/interfaces/i-event';
+import { getEventById, getFeaturedEvents } from '@/helpers/api-util';
 
-const EventDetailsPage = () => {
-  const router = useRouter();
-  const eventId = router.query.eventid;
-
-  if (eventId) {
-    const event = getEventById(eventId as string);
-
-    return event ? (
-      <>
-        <EventSummary title={event.title} />
-        <EventLogistics
-          date={event.date}
-          address={event.location}
-          image={event.image}
-          imageAlt={event.title}
-        />
-        <EventContent>
-          <p>{event.description}</p>
-        </EventContent>
-      </>
-    ) : (
+const EventDetailsPage = ({ selectedEvent }: { selectedEvent: IEvent }) => {
+  if (!selectedEvent) {
+    return (
       <ErrorAlert>
         <p>No event found!</p>
       </ErrorAlert>
     );
-  } else {
-    return null;
+  }
+
+  if (selectedEvent) {
+    return (
+      <>
+        <EventSummary title={selectedEvent.title} />
+        <EventLogistics
+          date={selectedEvent.date}
+          address={selectedEvent.location}
+          image={selectedEvent.image}
+          imageAlt={selectedEvent.title}
+        />
+        <EventContent>
+          <p>{selectedEvent.description}</p>
+        </EventContent>
+      </>
+    );
   }
 };
 
+export async function getStaticProps(context: GetStaticPropsContext) {
+  const { params } = context;
+  const eventId = params?.eventid;
+
+  const event = await getEventById(eventId as string);
+
+  return {
+    props: {
+      selectedEvent: event,
+    },
+    revalidate: 30,
+  };
+}
+
+export async function getStaticPaths() {
+  const events = await getFeaturedEvents();
+
+  const paths = events.map((event) => ({ params: { eventid: event.id } }));
+
+  return {
+    paths,
+    fallback: 'blocking',
+  };
+}
 export default EventDetailsPage;
