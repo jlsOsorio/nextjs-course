@@ -6,6 +6,7 @@ import ErrorAlert from '@/components/ui/error-alert';
 import { GetStaticPropsContext } from 'next';
 import IEvent from '@/interfaces/i-event';
 import { getEventById, getFeaturedEvents } from '@/helpers/api-util';
+import Head from 'next/head';
 
 const EventDetailsPage = ({ selectedEvent }: { selectedEvent: IEvent }) => {
   if (!selectedEvent) {
@@ -19,6 +20,10 @@ const EventDetailsPage = ({ selectedEvent }: { selectedEvent: IEvent }) => {
   if (selectedEvent) {
     return (
       <>
+        <Head>
+          <title>{selectedEvent.title}</title>
+          <meta name="description" content={selectedEvent.description} />
+        </Head>
         <EventSummary title={selectedEvent.title} />
         <EventLogistics
           date={selectedEvent.date}

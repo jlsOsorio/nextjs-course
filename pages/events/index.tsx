@@ -4,6 +4,7 @@ import EventList from '@/components/events/event-list';
 import { useRouter } from 'next/router';
 import IEvent from '@/interfaces/i-event';
 import { getAllEvents } from '@/helpers/api-util';
+import Head from 'next/head';
 
 const EventsPage = ({ events }: { events: IEvent[] }) => {
   const router = useRouter();
@@ -19,6 +20,13 @@ const EventsPage = ({ events }: { events: IEvent[] }) => {
 
   return (
     <>
+      <Head>
+        <title>All Events</title>
+        <meta
+          name="description"
+          content="Find a lot of great events that allow you to evolve..."
+        />
+      </Head>
       <EventsSearch onSearch={findEventsHandler} />
       <EventList items={events} />
     </>

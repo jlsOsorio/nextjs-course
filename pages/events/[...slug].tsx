@@ -6,6 +6,7 @@ import { getFilteredEvents } from '@/helpers/api-util';
 import IEvent from '@/interfaces/i-event';
 import { transformAllData } from '@/utils/events-utils';
 import { GetServerSidePropsContext } from 'next';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import React from 'react';
 import useSWR from 'swr';
@@ -97,6 +98,13 @@ const FilteredEventsPage = () => {
 
   return (
     <>
+      <Head>
+        <title>Filtered Events</title>
+        <meta
+          name="description"
+          content={`All events for ${numMonth}/${numYear}.`}
+        />
+      </Head>
       <ResultsTitle date={propsDate} />
       <EventList items={filteredEvents} />
     </>
