@@ -3,6 +3,7 @@ import DateIcon from '../icons/date-icon';
 import LogisticsItem from './logistics-item';
 import styles from './event-logistics.module.css';
 import React from 'react';
+import Image from 'next/image';
 
 interface IEventLogistics {
   date: string;
@@ -27,6 +28,7 @@ const EventLogistics = ({
   return (
     <section className={styles.logistics}>
       <div className={styles.image}>
+        <Image src={`/${image}`} alt={imageAlt} width={400} height={400} />
         <img src={`/${image}`} alt={imageAlt} />
       </div>
       <ul className={styles.list}>
