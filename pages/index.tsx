@@ -1,3 +1,4 @@
+import { IFeedback } from '@/interfaces/i-feedback';
 import { IRequest } from '@/interfaces/i-request';
 import React, { FormEvent } from 'react';
 
@@ -54,7 +55,7 @@ const HomePage = () => {
       <hr />
       <button onClick={loadFeedbackHandler}>Load Feedback</button>
       <ul>
-        {feedbackItems.map((item: { id: string; text: string }) => (
+        {feedbackItems.map((item: IFeedback) => (
           <li key={item.id}>{item.text}</li>
         ))}
       </ul>
