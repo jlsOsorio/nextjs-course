@@ -2,6 +2,17 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import fs from 'fs';
 import path from 'path';
 
+function buildFeedbackPath() {
+  return path.join(process.cwd(), 'data', 'feedback.json');
+}
+
+function extractFeedback(filePath: string) {
+  const fileData = fs.readFileSync(filePath);
+  const data = JSON.parse(fileData.toString());
+
+  return data;
+}
+
 function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
     const email = req.body.email;
@@ -14,9 +25,8 @@ function handler(req: NextApiRequest, res: NextApiResponse) {
     };
 
     // Store in a database or a file
-    const filePath = path.join(process.cwd(), 'data', 'feedback.json');
-    const fileData = fs.readFileSync(filePath);
-    const data = JSON.parse(fileData.toString());
+    const filePath = buildFeedbackPath();
+    const data = extractFeedback(filePath);
     data.push(newFeedback);
 
     fs.writeFileSync(filePath, JSON.stringify(data));
@@ -26,8 +36,11 @@ function handler(req: NextApiRequest, res: NextApiResponse) {
       feedback: newFeedback,
     });
   } else {
+    const filePath = buildFeedbackPath();
+    const data = extractFeedback(filePath);
+
     res.status(200).json({
-      message: 'This works!',
+      feedback: data,
     });
   }
 }

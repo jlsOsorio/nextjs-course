@@ -2,6 +2,8 @@ import { IRequest } from '@/interfaces/i-request';
 import React, { FormEvent } from 'react';
 
 const HomePage = () => {
+  const [feedbackItems, setFeedbackItems] = React.useState([]);
+
   const emailInputRef = React.useRef<HTMLInputElement>(null);
   const feedbackInputRef = React.useRef<HTMLTextAreaElement>(null);
 
@@ -27,6 +29,14 @@ const HomePage = () => {
       .then((data) => console.log(data));
   }
 
+  function loadFeedbackHandler() {
+    fetch('/api/feedback')
+      .then((res) => res.json())
+      .then((data) => {
+        setFeedbackItems(data.feedback);
+      });
+  }
+
   return (
     <div>
       <h1>The Home Page</h1>
@@ -41,6 +51,13 @@ const HomePage = () => {
         </div>
         <button>Send Feedback</button>
       </form>
+      <hr />
+      <button onClick={loadFeedbackHandler}>Load Feedback</button>
+      <ul>
+        {feedbackItems.map((item: { id: string; text: string }) => (
+          <li key={item.id}>{item.text}</li>
+        ))}
+      </ul>
     </div>
   );
 };
