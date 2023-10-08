@@ -1,3 +1,4 @@
+import { IRequest } from '@/interfaces/i-request';
 import React, { FormEvent } from 'react';
 
 const HomePage = () => {
@@ -9,6 +10,21 @@ const HomePage = () => {
 
     const enteredEmail = emailInputRef.current?.value;
     const enteredFeedback = feedbackInputRef.current?.value;
+
+    const requestBody: IRequest = {
+      email: enteredEmail ?? '',
+      text: enteredFeedback ?? '',
+    };
+
+    fetch('/api/feedback', {
+      method: 'POST',
+      body: JSON.stringify(requestBody),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => console.log(data));
   }
 
   return (

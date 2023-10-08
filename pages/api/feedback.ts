@@ -8,7 +8,7 @@ function handler(req: NextApiRequest, res: NextApiResponse) {
     const feedbackText = req.body.text;
 
     const newFeedback = {
-      id: new Date().toISOString,
+      id: new Date().toISOString(),
       email,
       text: feedbackText,
     };
