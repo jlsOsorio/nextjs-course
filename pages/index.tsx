@@ -1,5 +1,4 @@
 import { IFeedback } from '@/interfaces/i-feedback';
-import { IRequest } from '@/interfaces/i-request';
 import React, { FormEvent } from 'react';
 
 const HomePage = () => {
@@ -14,7 +13,7 @@ const HomePage = () => {
     const enteredEmail = emailInputRef.current?.value;
     const enteredFeedback = feedbackInputRef.current?.value;
 
-    const requestBody: IRequest = {
+    const requestBody: IFeedback = {
       email: enteredEmail ?? '',
       text: enteredFeedback ?? '',
     };
