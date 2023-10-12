@@ -1,23 +1,19 @@
 import React from 'react';
 
 import styles from './comment-list.module.css';
+import IComment from '@/interfaces/i-comment';
 
-const CommentList = () => {
+const CommentList = ({ comments }: { comments: IComment[] }) => {
   return (
     <ul className={styles.comments}>
-      {/* Render list of comments - fetched from API */}
-      <li>
-        <p>My comment is amazing!</p>
-        <div>
-          By <address>Maximilian</address>
-        </div>
-      </li>
-      <li>
-        <p>My comment is amazing!</p>
-        <div>
-          By <address>Maximilian</address>
-        </div>
-      </li>
+      {comments.map((comment) => (
+        <li key={comment.text}>
+          <p>{comment.text}</p>
+          <div>
+            By <address>{comment.name}</address>
+          </div>
+        </li>
+      ))}
     </ul>
   );
 };

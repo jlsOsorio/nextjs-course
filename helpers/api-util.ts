@@ -1,4 +1,6 @@
 import { transformAllData } from '@/utils/events-utils';
+import path from 'path';
+import fs from 'fs';
 
 export async function getAllEvents() {
   const response = await fetch(
@@ -36,4 +38,15 @@ export async function getFilteredEvents(dateFilter: {
   });
 
   return filteredEvents;
+}
+
+export function buildPath(fileName: string) {
+  return path.join(process.cwd(), 'data', fileName);
+}
+
+export function extractObject<T>(filePath: string): T[] {
+  const fileData = fs.readFileSync(filePath);
+  const data = JSON.parse(fileData.toString());
+
+  return data;
 }
