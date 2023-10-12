@@ -10,10 +10,12 @@ const Comments = ({ eventId }: { eventId: string }) => {
   const [comments, setComments] = React.useState<IComment[]>([]);
 
   React.useEffect(() => {
-    fetch(`/api/comments/${eventId}`)
-      .then((res) => res.json())
-      .then((json) => setComments(json.comments));
-  }, [eventId]);
+    if (showComments) {
+      fetch(`/api/comments/${eventId}`)
+        .then((res) => res.json())
+        .then((json) => setComments(json.comments));
+    }
+  }, [eventId, showComments]);
 
   function toggleCommentsHandler() {
     setShowComments((prevStatus) => !prevStatus);
@@ -29,7 +31,8 @@ const Comments = ({ eventId }: { eventId: string }) => {
     })
       .then((res) => res.json())
       .then((json) => {
-        setComments([...comments, json.comment]);
+        //setComments([...comments, json.comment]);
+        console.log(json);
       });
   }
 
@@ -39,7 +42,7 @@ const Comments = ({ eventId }: { eventId: string }) => {
         {showComments ? 'Hide' : 'Show'} Comments
       </button>
       {showComments && <NewComment onAddComment={addCommentHandler} />}
-      {showComments && comments && <CommentList comments={comments} />}
+      {showComments && <CommentList comments={comments} />}
     </section>
   );
 };

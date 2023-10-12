@@ -1,7 +1,6 @@
 import { buildPath, extractObject } from '@/helpers/api-util';
 import IComment from '@/interfaces/i-comment';
 import { NextApiRequest, NextApiResponse } from 'next';
-import fs from 'fs';
 
 function handler(req: NextApiRequest, res: NextApiResponse) {
   const eventId = req.query.eventId as string;
@@ -10,25 +9,50 @@ function handler(req: NextApiRequest, res: NextApiResponse) {
   const data = extractObject<IComment>(filePath);
 
   if (req.method === 'POST') {
-    const commentBody: IComment = {
-      email: req.body.email,
-      name: req.body.name,
-      text: req.body.text,
-      eventId,
+    const { email, name, text } = req.body;
+
+    if (
+      !email.includes('@') ||
+      !name ||
+      name.trim() === '' ||
+      text.trim() === ''
+    ) {
+      res.status(422).json({ message: 'Invalid input.' });
+      return;
+    }
+
+    // const commentBody: IComment = {
+    //   email: req.body.email,
+    //   name: req.body.name,
+    //   text: req.body.text,
+    //   eventId,
+    // };
+
+    // data.push(commentBody);
+    // fs.writeFileSync(filePath, JSON.stringify(data));
+
+    const newComment = {
+      id: new Date().toString(),
+      email,
+      name,
+      text,
     };
 
-    data.push(commentBody);
-    fs.writeFileSync(filePath, JSON.stringify(data));
+    console.log(newComment);
 
     res.status(201).json({
-      message: 'Comment added sucessfully',
-      comment: commentBody,
+      message: 'Added comment',
+      comment: newComment,
     });
   } else if (req.method === 'GET') {
-    const eventComments = data.filter((item) => item.eventId === eventId);
+    const dummyList = [
+      { id: 'c1', name: 'João', text: 'A first comment!' },
+      { id: 'c2', name: 'Ana', text: 'A second comment!' },
+    ];
+    // const eventComments = data.filter((item) => item.eventId === eventId);
 
     res.status(200).json({
-      comments: eventComments,
+      comments: dummyList,
     });
   }
 }

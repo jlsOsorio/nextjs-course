@@ -7,7 +7,7 @@ const CommentList = ({ comments }: { comments: IComment[] }) => {
   return (
     <ul className={styles.comments}>
       {comments.map((comment) => (
-        <li key={comment.text}>
+        <li key={comment.id}>
           <p>{comment.text}</p>
           <div>
             By <address>{comment.name}</address>
