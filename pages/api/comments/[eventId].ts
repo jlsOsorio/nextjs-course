@@ -1,9 +1,16 @@
 import { buildPath, extractObject } from '@/helpers/api-util';
 import IComment from '@/interfaces/i-comment';
 import { NextApiRequest, NextApiResponse } from 'next';
+import { MongoClient } from 'mongodb';
 
-function handler(req: NextApiRequest, res: NextApiResponse) {
+async function handler(req: NextApiRequest, res: NextApiResponse) {
   const eventId = req.query.eventId as string;
+
+  const url =
+    'mongodb+srv://mongodb:mongodb@cluster0.rfslo2e.mongodb.net/?retryWrites=true&w=majority';
+  const client = new MongoClient(url);
+
+  await client.connect();
 
   const filePath = buildPath('comments.json');
   const data = extractObject<IComment>(filePath);
@@ -32,13 +39,16 @@ function handler(req: NextApiRequest, res: NextApiResponse) {
     // fs.writeFileSync(filePath, JSON.stringify(data));
 
     const newComment = {
-      id: new Date().toString(),
       email,
       name,
       text,
+      eventId,
     };
 
-    console.log(newComment);
+    const db = client.db('events');
+    const result = await db.collection('comments').insertOne(newComment);
+
+    console.log(result);
 
     res.status(201).json({
       message: 'Added comment',
@@ -55,6 +65,8 @@ function handler(req: NextApiRequest, res: NextApiResponse) {
       comments: dummyList,
     });
   }
+
+  client.close();
 }
 
 export default handler;
