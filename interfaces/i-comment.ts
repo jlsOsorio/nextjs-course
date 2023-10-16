@@ -1,5 +1,5 @@
 interface IComment {
-  id?: string;
+  _id?: string;
   email: string;
   name: string;
   text: string;
