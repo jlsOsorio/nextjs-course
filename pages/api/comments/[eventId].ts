@@ -1,5 +1,3 @@
-import { buildPath, extractObject } from '@/helpers/api-util';
-import IComment from '@/interfaces/i-comment';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { MongoClient } from 'mongodb';
 
