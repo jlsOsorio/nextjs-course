@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+import { MongoClient } from 'mongodb';
 
-function handler(req: NextApiRequest, res: NextApiResponse) {
+async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
     const email = req.body.email;
 
@@ -14,7 +15,31 @@ function handler(req: NextApiRequest, res: NextApiResponse) {
     // data.push(email);
     // fs.writeFileSync(filePath, JSON.stringify(data));
 
-    console.log(email);
+    // MongoClient.connect(
+    //   'mongodb+srv://mongodb:mongodb@cluster0.rfslo2e.mongodb.net/newsletter?retryWrites=true&w=majority'
+    // ).then(client => {
+
+    // });
+
+    // Connection URL
+    const url =
+      'mongodb+srv://mongodb:mongodb@cluster0.rfslo2e.mongodb.net/?retryWrites=true&w=majority';
+    const client = new MongoClient(url);
+
+    // Database Name
+    const dbName = 'newsletter';
+
+    // Use connect method to connect to the server
+    await client.connect();
+    console.log('Connected successfully to server');
+
+    const db = client.db(dbName);
+    await db.collection('emails').insertOne({
+      email,
+    });
+
+    client.close();
+
     res.status(201).json({
       message: 'Signed up!',
     });
