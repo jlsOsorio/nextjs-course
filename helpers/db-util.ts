@@ -31,10 +31,15 @@ export async function getAllDocuments(
   client: MongoClient,
   dbName: string,
   collection: string,
-  sort: Sort
+  sort: Sort,
+  filter: { [key: string]: string } = {}
 ) {
   const db = client.db(dbName);
-  const documents = await db.collection(collection).find().sort(sort).toArray();
+  const documents = await db
+    .collection(collection)
+    .find(filter)
+    .sort(sort)
+    .toArray();
 
   return documents;
 }
