@@ -2,11 +2,12 @@ import React, { ChangeEvent, ChangeEventHandler, FocusEvent } from 'react';
 
 import styles from './newsletter-registration.module.css';
 import EmailBody from '@/interfaces/i-email-body';
+import NotificationContext from '@/store/notification.context';
 
 function NewsletterRegistration() {
   const emailInputRef = React.useRef<HTMLInputElement>(null);
-  // const [emailInput, setEmailInput] = React.useState<string>('');
   const [error, setError] = React.useState<string | null>(null);
+  const notificationCtx = React.useContext(NotificationContext);
 
   const regex = new RegExp(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/);
 
@@ -23,7 +24,7 @@ function NewsletterRegistration() {
     }
   }
 
-  function changeHandler({ target }: ChangeEvent<HTMLInputElement>) {
+  function changeHandler() {
     if (emailInputRef.current) {
       const value = emailInputRef.current.value;
       if (error && value !== '' && regex.test(value)) {
@@ -42,6 +43,12 @@ function NewsletterRegistration() {
       if (!error && emailInputRef.current.value !== '') {
         const enteredEmail = emailInputRef.current.value;
 
+        notificationCtx.showNotification({
+          title: 'Signing up...',
+          message: 'Registering for newsletter.',
+          status: 'pending',
+        });
+
         fetch('/api/registration', {
           method: 'POST',
           headers: {
@@ -49,14 +56,31 @@ function NewsletterRegistration() {
           },
           body: JSON.stringify({ email: enteredEmail }),
         })
-          .then((res) => res.json())
-          .then((json) => console.log(json));
+          .then((res) => {
+            if (res.ok) {
+              return res.json();
+            }
+
+            res.json().then((data) => {
+              throw new Error(data.message || 'Something went wrong!');
+            });
+          })
+          .then((data) => {
+            notificationCtx.showNotification({
+              title: 'Success!',
+              message: 'Successfully registered for newsletter.',
+              status: 'success',
+            });
+          })
+          .catch((error) => {
+            notificationCtx.showNotification({
+              title: 'Error!',
+              message: error.message || 'Something went wrong!',
+              status: 'error',
+            });
+          });
       }
     }
-
-    // fetch user input (state or refs)
-    // optional: validate input
-    // send valid data to API
   }
 
   return (
