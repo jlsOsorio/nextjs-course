@@ -20,6 +20,22 @@ export const NotificationContextProvider = ({
   const [activeNotification, setActiveNotification] =
     React.useState<INotification | null>(null);
 
+  React.useEffect(() => {
+    if (
+      activeNotification &&
+      (activeNotification.status === 'success' ||
+        activeNotification.status === 'error')
+    ) {
+      const timer = setTimeout(() => {
+        setActiveNotification(null);
+      }, 3000);
+
+      return () => {
+        clearTimeout(timer);
+      };
+    }
+  }, [activeNotification]);
+
   function showNotificationHandler(notificationData: INotification) {
     setActiveNotification(notificationData);
   }
