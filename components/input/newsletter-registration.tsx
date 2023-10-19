@@ -64,7 +64,7 @@ function NewsletterRegistration() {
             const data = await res.json();
             throw new Error(data.message || 'Something went wrong!');
           })
-          .then((data) => {
+          .then(() => {
             notificationCtx.showNotification({
               title: 'Success!',
               message: 'Successfully registered for newsletter.',

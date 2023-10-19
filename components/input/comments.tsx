@@ -4,24 +4,53 @@ import CommentList from './comment-list';
 import NewComment from './new-comment';
 import styles from './comments.module.css';
 import IComment from '@/interfaces/i-comment';
+import NotificationContext from '@/store/notification.context';
+import Loading from '../ui/loading';
 
 const Comments = ({ eventId }: { eventId: string }) => {
   const [showComments, setShowComments] = React.useState(false);
   const [comments, setComments] = React.useState<IComment[]>([]);
+  const [loading, setLoading] = React.useState(false);
+  const notificationCtx = React.useContext(NotificationContext);
 
   React.useEffect(() => {
     if (showComments) {
+      setLoading(true);
       fetch(`/api/comments/${eventId}`)
-        .then((res) => res.json())
-        .then((json) => setComments(json.comments));
+        .then(async (res) => {
+          if (res.ok) {
+            return res.json();
+          }
+
+          const data = await res.json();
+          setLoading(false);
+          throw new Error(data.message || 'Something went wrong!');
+        })
+        .then((json) => {
+          setComments(json.comments);
+          setLoading(false);
+        })
+        .catch((error) => {
+          notificationCtx.showNotification({
+            title: 'Error!',
+            message: error.message || 'Something went wrong!',
+            status: 'error',
+          });
+        });
     }
-  }, [eventId, showComments]);
+  }, [eventId, showComments, notificationCtx]);
 
   function toggleCommentsHandler() {
     setShowComments((prevStatus) => !prevStatus);
   }
 
   function addCommentHandler(commentData: IComment) {
+    notificationCtx.showNotification({
+      title: 'Creating new comment...',
+      message: 'New comment to event.',
+      status: 'pending',
+    });
+
     fetch(`/api/comments/${eventId}`, {
       method: 'POST',
       headers: {
@@ -29,13 +58,31 @@ const Comments = ({ eventId }: { eventId: string }) => {
       },
       body: JSON.stringify(commentData),
     })
-      .then((res) => res.json())
-      .then((json) => {
-        //setComments([...comments, json.comment]);
-        console.log(json);
+      .then(async (res) => {
+        if (res.ok) {
+          return res.json();
+        }
+
+        const data = await res.json();
+        throw new Error(data.message || 'Something went wrong!');
+      })
+      .then(() => {
+        notificationCtx.showNotification({
+          title: 'Success!',
+          message: 'Successfully added new comment to event.',
+          status: 'success',
+        });
+      })
+      .catch((error) => {
+        notificationCtx.showNotification({
+          title: 'Error!',
+          message: error.message || 'Something went wrong!',
+          status: 'error',
+        });
       });
   }
 
+  if (loading) return <Loading loadingText="Loading comments..." />;
   return (
     <section className={styles.comments}>
       <button onClick={toggleCommentsHandler}>

@@ -1,0 +1,11 @@
+.container {
+  font: inherit;
+  padding: 0.5rem 1rem;
+  color: #03be9f;
+  text-align: center;
+}
+
+.text {
+  font-size: 2rem;
+  font-weight: bold;
+}
