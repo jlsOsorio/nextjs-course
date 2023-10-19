@@ -56,14 +56,13 @@ function NewsletterRegistration() {
           },
           body: JSON.stringify({ email: enteredEmail }),
         })
-          .then((res) => {
+          .then(async (res) => {
             if (res.ok) {
               return res.json();
             }
 
-            res.json().then((data) => {
-              throw new Error(data.message || 'Something went wrong!');
-            });
+            const data = await res.json();
+            throw new Error(data.message || 'Something went wrong!');
           })
           .then((data) => {
             notificationCtx.showNotification({
