@@ -46,8 +46,8 @@ const Comments = ({ eventId }: { eventId: string }) => {
 
   function addCommentHandler(commentData: IComment) {
     notificationCtx.showNotification({
-      title: 'Creating new comment...',
-      message: 'New comment to event.',
+      title: 'Sending comment...',
+      message: 'Your comment is currently being stored into a database.',
       status: 'pending',
     });
 
@@ -69,7 +69,7 @@ const Comments = ({ eventId }: { eventId: string }) => {
       .then(() => {
         notificationCtx.showNotification({
           title: 'Success!',
-          message: 'Successfully added new comment to event.',
+          message: 'Your comment was saved!',
           status: 'success',
         });
       })
@@ -82,14 +82,14 @@ const Comments = ({ eventId }: { eventId: string }) => {
       });
   }
 
-  if (loading) return <Loading loadingText="Loading comments..." />;
   return (
     <section className={styles.comments}>
       <button onClick={toggleCommentsHandler}>
         {showComments ? 'Hide' : 'Show'} Comments
       </button>
       {showComments && <NewComment onAddComment={addCommentHandler} />}
-      {showComments && <CommentList comments={comments} />}
+      {showComments && !loading && <CommentList comments={comments} />}
+      {showComments && loading && <Loading loadingText="Loading comments..." />}
     </section>
   );
 };
