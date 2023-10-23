@@ -4,7 +4,7 @@ import CommentList from './comment-list';
 import NewComment from './new-comment';
 import styles from './comments.module.css';
 import IComment from '@/interfaces/i-comment';
-import NotificationContext from '@/store/notification.context';
+import NotificationContext from '@/store/notification-context';
 import Loading from '../ui/loading';
 
 const Comments = ({ eventId }: { eventId: string }) => {

@@ -2,7 +2,7 @@ import React, { ChangeEvent, ChangeEventHandler, FocusEvent } from 'react';
 
 import styles from './newsletter-registration.module.css';
 import EmailBody from '@/interfaces/i-email-body';
-import NotificationContext from '@/store/notification.context';
+import NotificationContext from '@/store/notification-context';
 
 function NewsletterRegistration() {
   const emailInputRef = React.useRef<HTMLInputElement>(null);

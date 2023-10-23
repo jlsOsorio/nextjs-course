@@ -3,7 +3,7 @@ import Head from 'next/head';
 import Layout from '../components/layout/layout';
 import '../styles/globals.css';
 import type { AppProps } from 'next/app';
-import { NotificationContextProvider } from '@/store/notification.context';
+import { NotificationContextProvider } from '@/store/notification-context';
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
